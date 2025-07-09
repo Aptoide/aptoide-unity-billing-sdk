@@ -81,7 +81,10 @@ public class AptoideBillingSDKManager : MonoBehaviour
         string developerPayload = billingFlowParams.DeveloperPayload;
         string obfuscatedAccountId = billingFlowParams.ObfuscatedAccountId;
         bool freeTrial = billingFlowParams.FreeTrial;
-        BillingResult billingResult = aptoideBillingSDKUnityBridge?.CallStatic<int>("launchBillingFlow", sku, skuType, developerPayload, obfuscatedAccountId, freeTrial) ?? -1;
+        string billingResultJson = aptoideBillingSDKUnityBridge?.CallStatic<string>("launchBillingFlow", sku, skuType, developerPayload, obfuscatedAccountId, freeTrial) ?? "{}";
+
+        BillingResult billingResult = JsonUtility.FromJson<BillingResult>(billingResultJson);
+
         Debug.Log($"AptoideBillingSDKManager | LaunchBillingFlow: responseCode: {billingResult.ResponseCode}, debugMessage: {billingResult.DebugMessage}");
 
         return billingResult;
@@ -92,9 +95,11 @@ public class AptoideBillingSDKManager : MonoBehaviour
         aptoideBillingSDKUnityBridge?.CallStatic("consumeAsync", consumeParams.PurchaseToken);
     }
 
-    public static BillingResult IsFeatureSupported(string feature)
+    public static BillingResult IsFeatureSupported(int feature)
     {
-        BillingResult billingResult = aptoideBillingSDKUnityBridge?.CallStatic<int>("isFeatureSupported", feature) ?? -1;
+        string billingResultJson = aptoideBillingSDKUnityBridge?.CallStatic<string>("isFeatureSupported", feature) ?? "{}";
+
+        BillingResult billingResult = JsonUtility.FromJson<BillingResult>(billingResultJson);
         Debug.Log($"AptoideBillingSDKManager | IsFeatureSupported: responseCode: {billingResult.ResponseCode}, debugMessage: {billingResult.DebugMessage}");
 
         return billingResult;
@@ -173,7 +178,7 @@ public class AptoideBillingSDKManager : MonoBehaviour
 
         ProductDetailsRequestResult productDetailsResult = JsonUtility.FromJson<ProductDetailsRequestResult>(productDetailsResultJson);
 
-        productDetailsResponseListener.OnProductDetailsResponse(productDetailsResult.BillingResult, productDetailsResult.Details);
+        productDetailsResponseListener.OnProductDetailsResponse(productDetailsResult.BillingResult, productDetailsResult.ProductDetailsResult);
     }
 
     public void ConsumeResponseCallback(string consumeResultJson)
