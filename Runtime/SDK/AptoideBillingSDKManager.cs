@@ -167,9 +167,9 @@ public class AptoideBillingSDKManager : MonoBehaviour
     {
         Debug.Log($"AptoideBillingSDKManager | Purchases Response: {purchasesResultJson}");
 
-        PurchasesResponseResult purchasesResponseResult = JsonUtility.FromJson<PurchasesResponseResult>(purchasesResultJson);
+        PurchasesResult purchasesResult = JsonUtility.FromJson<PurchasesResult>(purchasesResultJson);
 
-        purchasesResponseListener.OnQueryPurchasesResponse(purchasesResponseResult.BillingResult, purchasesResponseResult.Purchases);
+        purchasesResponseListener.OnQueryPurchasesResponse(purchasesResult.BillingResult, purchasesResult.Purchases);
     }
 
     public void ProductDetailsResponseCallback(string productDetailsResultJson)
