@@ -171,7 +171,7 @@ public class AptoideBillingSDKManager : MonoBehaviour
     {
         Debug.Log($"AptoideBillingSDKManager | Product Details Received: {productDetailsResultJson}");
 
-        ProductDetailsResult productDetailsResult = JsonUtility.FromJson<ProductDetailsResult>(productDetailsResultJson);
+        ProductDetailsRequestResult productDetailsResult = JsonUtility.FromJson<ProductDetailsRequestResult>(productDetailsResultJson);
 
         productDetailsResponseListener.OnProductDetailsResponse(productDetailsResult.BillingResult, productDetailsResult.Details);
     }
