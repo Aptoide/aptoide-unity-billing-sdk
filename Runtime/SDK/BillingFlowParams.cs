@@ -15,7 +15,7 @@ public class BillingFlowParams
         string developerPayload,
         string obfuscatedAccountId,
         bool freeTrial
-    ) : this(sku, skuType, developerPayload, obfuscatedAccountId, freeTrial);
+    );
 
     public class Builder
     {
