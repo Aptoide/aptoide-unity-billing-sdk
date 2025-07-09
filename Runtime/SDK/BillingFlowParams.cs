@@ -15,7 +15,14 @@ public class BillingFlowParams
         string developerPayload,
         string obfuscatedAccountId,
         bool freeTrial
-    );
+    )
+    {
+        Sku = sku;
+        SkuType = skuType;
+        DeveloperPayload = developerPayload;
+        ObfuscatedAccountId = obfuscatedAccountId;
+        FreeTrial = freeTrial;
+    };
 
     public class Builder
     {
