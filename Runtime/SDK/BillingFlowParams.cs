@@ -22,7 +22,7 @@ public class BillingFlowParams
         DeveloperPayload = developerPayload;
         ObfuscatedAccountId = obfuscatedAccountId;
         FreeTrial = freeTrial;
-    };
+    }
 
     public class Builder
     {
