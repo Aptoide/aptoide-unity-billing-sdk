@@ -1,41 +1,21 @@
 using System;
 using System.Collections.Generic;
 
-[Obsolete("Deprecated constructor. Use the Builder to create the BillingFlowParams.")]
 public class BillingFlowParams
 {
     public string Sku { get; }
     public string SkuType { get; }
-    public string OrderReference { get; }
     public string DeveloperPayload { get; }
-    public string Origin { get; }
-    public string ObfuscatedAccountId { get; set; }
-    public bool FreeTrial { get; set; }
+    public string ObfuscatedAccountId { get; }
+    public bool FreeTrial { get; }
 
-    [Obsolete("Deprecated constructor. Use the Builder to create the BillingFlowParams.")]
-    public BillingFlowParams(string sku, string skuType, string orderReference, string developerPayload, string origin)
-    {
-        Sku = sku;
-        SkuType = skuType;
-        OrderReference = orderReference;
-        DeveloperPayload = developerPayload;
-        Origin = origin;
-    }
-
-    [Obsolete("Deprecated constructor. Use the Builder to create the BillingFlowParams.")]
-    public BillingFlowParams(
+    internal BillingFlowParams(
         string sku,
         string skuType,
-        string orderReference,
         string developerPayload,
-        string origin,
         string obfuscatedAccountId,
         bool freeTrial
-    ) : this(sku, skuType, orderReference, developerPayload, origin)
-    {
-        ObfuscatedAccountId = obfuscatedAccountId;
-        FreeTrial = freeTrial;
-    }
+    ) : this(sku, skuType, developerPayload, obfuscatedAccountId, freeTrial);
 
     public class Builder
     {
@@ -100,9 +80,7 @@ public class BillingFlowParams
             return new BillingFlowParams(
                 productDetails.ProductId,
                 productDetails.ProductType,
-                null,
                 developerPayload,
-                null,
                 obfuscatedAccountId,
                 freeTrial
             );

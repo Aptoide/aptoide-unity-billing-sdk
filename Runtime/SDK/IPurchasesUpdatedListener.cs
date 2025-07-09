@@ -18,5 +18,5 @@ public interface IPurchasesUpdatedListener
      * <p>ITEM_NOT_OWNED = 8 - Failure to consume since item is not owned
      * @param purchases List of updated {@link Purchase} purchases if present.
      **/
-    void OnPurchasesUpdated(int responseCode, Purchase[] purchases);
+    void OnPurchasesUpdated(BillingResult billingResult, Purchase[] purchases);
 }

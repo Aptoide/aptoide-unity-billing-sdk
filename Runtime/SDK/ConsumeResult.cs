@@ -1,6 +1,6 @@
 [System.Serializable]
 public class ConsumeResult
 {
-    public int responseCode; // Response code of the Consume action
-    public string purchaseToken; // Purchase token of the Consumed Purchase
+    public int ResponseCode; // Response code of the Consume action
+    public string PurchaseToken; // Purchase token of the Consumed Purchase
 }

@@ -2,15 +2,15 @@
 public class Purchase
 {
     // Purchase details
-    public string developerPayload;
-    public string obfuscatedAccountId;
+    public AccountIdentifiers AccountIdentifiers;
+    public string DeveloperPayload;
+    public string OrderId;
+    public string OriginalJson;
+    public string PackageName;
+    public string[] Products;
+    public int PurchaseState;
+    public long PurchaseTime;
+    public string PurchaseToken;
+    public string Signature;
     public bool isAutoRenewing;
-    public string itemType;
-    public string orderId;
-    public string originalJson;
-    public string packageName;
-    public int purchaseState;
-    public long purchaseTime;
-    public string sku;
-    public string token;
 }

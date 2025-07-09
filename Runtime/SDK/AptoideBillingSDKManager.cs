@@ -7,34 +7,13 @@ public class AptoideBillingSDKManager : MonoBehaviour
     private static AptoideBillingSDKManager instance;
     private static AndroidJavaObject aptoideBillingSDKUnityBridge;
 
-    private static IAppCoinsBillingStateListener appCoinsBillingStateListener;
+    private static IAptoideBillingClientStateListener aptoideBillingClientStateListener;
     private static IConsumeResponseListener consumeResponseListener;
     private static IPurchasesUpdatedListener purchasesUpdatedListener;
     private static IPurchasesResponseListener purchasesResponseListener;
-    private static ISkuDetailsResponseListener skuDetailsResponseListener;
     private static IProductDetailsResponseListener productDetailsResponseListener;
 
-    public static void InitializePlugin(IAppCoinsBillingStateListener _appCoinsBillingStateListener,
-    IConsumeResponseListener _consumeResponseListener,
-    IPurchasesUpdatedListener _purchasesUpdatedListener,
-    ISkuDetailsResponseListener _skuDetailsResponseListener,
-    string publicKey,
-    string className)
-    {
-        appCoinsBillingStateListener = _appCoinsBillingStateListener;
-        consumeResponseListener = _consumeResponseListener;
-        purchasesUpdatedListener = _purchasesUpdatedListener;
-        skuDetailsResponseListener = _skuDetailsResponseListener;
-
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            aptoideBillingSDKUnityBridge = new AndroidJavaObject("AptoideBillingSDKUnityBridge");
-            Initialize(publicKey, className);
-            StartConnection();
-        }
-    }
-
-    public static void InitializePlugin(IAppCoinsBillingStateListener _appCoinsBillingStateListener,
+    public static void InitializePlugin(IAptoideBillingClientStateListener _aptoideBillingClientStateListener,
     IConsumeResponseListener _consumeResponseListener,
     IPurchasesUpdatedListener _purchasesUpdatedListener,
     IProductDetailsResponseListener _productDetailsResponseListener,
@@ -42,7 +21,7 @@ public class AptoideBillingSDKManager : MonoBehaviour
     string publicKey,
     string className)
     {
-        appCoinsBillingStateListener = _appCoinsBillingStateListener;
+        aptoideBillingClientStateListener = _aptoideBillingClientStateListener;
         consumeResponseListener = _consumeResponseListener;
         purchasesUpdatedListener = _purchasesUpdatedListener;
         purchasesResponseListener = _purchasesResponseListener;
@@ -81,18 +60,6 @@ public class AptoideBillingSDKManager : MonoBehaviour
         return isReady;
     }
 
-    public static void QuerySkuDetailsAsync(string[] skus, string skuType)
-    {
-        using (AndroidJavaObject skuList = new AndroidJavaObject("java.util.ArrayList"))
-        {
-            foreach (string sku in skus)
-            {
-                skuList.Call<bool>("add", sku);
-            }
-            aptoideBillingSDKUnityBridge?.CallStatic("querySkuDetailsAsync", skuList, skuType);
-        }
-    }
-
     public static void QueryProductDetailsAsync(QueryProductDetailsParams queryProductDetailsParams)
     {
         using (AndroidJavaObject productsList = new AndroidJavaObject("java.util.ArrayList"))
@@ -107,38 +74,17 @@ public class AptoideBillingSDKManager : MonoBehaviour
         }
     }
 
-    public static int LaunchBillingFlow(BillingFlowParams billingFlowParams)
+    public static BillingResult LaunchBillingFlow(BillingFlowParams billingFlowParams)
     {
         string sku = billingFlowParams.Sku;
         string skuType = billingFlowParams.SkuType;
         string developerPayload = billingFlowParams.DeveloperPayload;
         string obfuscatedAccountId = billingFlowParams.ObfuscatedAccountId;
         bool freeTrial = billingFlowParams.FreeTrial;
-        int launchBillingFlowResponseCode = aptoideBillingSDKUnityBridge?.CallStatic<int>("launchBillingFlowV2", sku, skuType, developerPayload, obfuscatedAccountId, freeTrial) ?? -1;
-        Debug.Log($"AptoideBillingSDKManager | LaunchBillingFlow: {launchBillingFlowResponseCode}");
+        BillingResult billingResult = aptoideBillingSDKUnityBridge?.CallStatic<int>("launchBillingFlow", sku, skuType, developerPayload, obfuscatedAccountId, freeTrial) ?? -1;
+        Debug.Log($"AptoideBillingSDKManager | LaunchBillingFlow: responseCode: {billingResult.ResponseCode}, debugMessage: {billingResult.DebugMessage}");
 
-        return launchBillingFlowResponseCode;
-    }
-
-    public static int LaunchBillingFlow(string sku, string skuType, string developerPayload)
-    {
-        int launchBillingFlowResponseCode = aptoideBillingSDKUnityBridge?.CallStatic<int>("launchBillingFlow", sku, skuType, developerPayload) ?? -1;
-        Debug.Log($"AptoideBillingSDKManager | LaunchBillingFlow: {launchBillingFlowResponseCode}");
-
-        return launchBillingFlowResponseCode;
-    }
-
-    public static int LaunchBillingFlow(string sku, string skuType, string developerPayload, string obfuscatedAccountId, bool freeTrial)
-    {
-        int launchBillingFlowResponseCode = aptoideBillingSDKUnityBridge?.CallStatic<int>("launchBillingFlow", sku, skuType, developerPayload, obfuscatedAccountId, freeTrial) ?? -1;
-        Debug.Log($"AptoideBillingSDKManager | LaunchBillingFlow: {launchBillingFlowResponseCode}");
-
-        return launchBillingFlowResponseCode;
-    }
-
-    public static void ConsumeAsync(string purchaseToken)
-    {
-        aptoideBillingSDKUnityBridge?.CallStatic("consumeAsync", purchaseToken);
+        return billingResult;
     }
 
     public static void ConsumeAsync(ConsumeParams consumeParams)
@@ -146,21 +92,12 @@ public class AptoideBillingSDKManager : MonoBehaviour
         aptoideBillingSDKUnityBridge?.CallStatic("consumeAsync", consumeParams.PurchaseToken);
     }
 
-    public static int IsFeatureSupported(string feature)
+    public static BillingResult IsFeatureSupported(string feature)
     {
-        int isFeatureSupportedResponseCode = aptoideBillingSDKUnityBridge?.CallStatic<int>("isFeatureSupported", feature) ?? -1;
-        Debug.Log($"AptoideBillingSDKManager | IsFeatureSupported: {isFeatureSupportedResponseCode}");
+        BillingResult billingResult = aptoideBillingSDKUnityBridge?.CallStatic<int>("isFeatureSupported", feature) ?? -1;
+        Debug.Log($"AptoideBillingSDKManager | IsFeatureSupported: responseCode: {billingResult.ResponseCode}, debugMessage: {billingResult.DebugMessage}");
 
-        return isFeatureSupportedResponseCode;
-    }
-
-    public static PurchasesResult QueryPurchases(string skuType)
-    {
-        string purchasesResultJson = aptoideBillingSDKUnityBridge?.CallStatic<string>("queryPurchases", skuType);
-        Debug.Log($"AptoideBillingSDKManager | QueryPurchases: {purchasesResultJson}");
-
-        PurchasesResult purchasesResult = JsonUtility.FromJson<PurchasesResult>(purchasesResultJson);
-        return purchasesResult;
+        return billingResult;
     }
 
     public static void QueryPurchasesAsync(QueryPurchasesParams queryPurchasesParams)
@@ -197,16 +134,19 @@ public class AptoideBillingSDKManager : MonoBehaviour
 
     // ---- Callback Handlers from Java ----
 
-    public void BillingSetupFinishedCallback(string responseCode)
+    public void BillingSetupFinishedCallback(string billingResultJson)
     {
-        Debug.Log("AppCoins Billing Setup Finished");
-        appCoinsBillingStateListener.OnBillingSetupFinished(int.Parse(responseCode));
+        Debug.Log($"Aptoide Billing Setup Finished: {billingResultJson}");
+
+        BillingResult billingResult = JsonUtility.FromJson<BillingResult>(billingResultJson);
+
+        aptoideBillingClientStateListener.OnBillingSetupFinished(billingResult);
     }
 
     public void BillingServiceDisconnectedCallback(string _)
     {
-        Debug.LogWarning("AptoideBillingSDKManager | AppCoins Billing Service Disconnected");
-        appCoinsBillingStateListener.OnBillingServiceDisconnected();
+        Debug.LogWarning("AptoideBillingSDKManager | Aptoide Billing Service Disconnected");
+        aptoideBillingClientStateListener.OnBillingServiceDisconnected();
     }
 
     public void PurchasesUpdatedCallback(string purchasesResultJson)
@@ -225,15 +165,6 @@ public class AptoideBillingSDKManager : MonoBehaviour
         PurchasesResponseResult purchasesResponseResult = JsonUtility.FromJson<PurchasesResponseResult>(purchasesResultJson);
 
         purchasesResponseListener.OnQueryPurchasesResponse(purchasesResponseResult.BillingResult, purchasesResponseResult.Purchases);
-    }
-
-    public void SkuDetailsResponseCallback(string skuDetailsResultJson)
-    {
-        Debug.Log($"AptoideBillingSDKManager | SKU Details Received: {skuDetailsResultJson}");
-
-        SkuDetailsResult skuDetailsResult = JsonUtility.FromJson<SkuDetailsResult>(skuDetailsResultJson);
-
-        skuDetailsResponseListener.OnSkuDetailsResponse(skuDetailsResult.responseCode, skuDetailsResult.skuDetails);
     }
 
     public void ProductDetailsResponseCallback(string productDetailsResultJson)

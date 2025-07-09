@@ -1,4 +1,4 @@
 public interface IConsumeResponseListener
 {
-    void OnConsumeResponse(int responseCode, string purchaseToken);
+    void OnConsumeResponse(BillingResult billingResult, string purchaseToken);
 }
