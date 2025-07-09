@@ -160,7 +160,7 @@ public class AptoideBillingSDKManager : MonoBehaviour
 
         PurchasesResult purchasesResult = JsonUtility.FromJson<PurchasesResult>(purchasesResultJson);
 
-        purchasesUpdatedListener.OnPurchasesUpdated(purchasesResult.responseCode, purchasesResult.purchases);
+        purchasesUpdatedListener.OnPurchasesUpdated(purchasesResult.BillingResult, purchasesResult.Purchases);
     }
 
     public void PurchasesResponseCallback(string purchasesResultJson)
@@ -187,6 +187,6 @@ public class AptoideBillingSDKManager : MonoBehaviour
 
         ConsumeResult consumeResult = JsonUtility.FromJson<ConsumeResult>(consumeResultJson);
 
-        consumeResponseListener.OnConsumeResponse(consumeResult.responseCode, consumeResult.purchaseToken);
+        consumeResponseListener.OnConsumeResponse(consumeResult.BillingResult, consumeResult.PurchaseToken);
     }
 }
