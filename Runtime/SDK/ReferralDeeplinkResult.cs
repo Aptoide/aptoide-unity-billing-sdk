@@ -1,7 +1,7 @@
 [System.Serializable]
 public class ReferralDeeplinkResult
 {
-    public int responseCode;
-    public string storeDeeplink;
-    public string fallbackDeeplink;
+    public BillingResult BillingResult;
+    public string StoreDeeplink;
+    public string FallbackDeeplink;
 }
