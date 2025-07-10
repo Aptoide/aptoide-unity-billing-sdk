@@ -1,0 +1,26 @@
+{
+  "name": "com.aptoide.aptoideunitybillingsdk",
+  "version": "3.0.0",
+  "displayName": "Aptoide Unity Billing SDK",
+  "description": "UPM for Aptoide Billing SDK Integration",
+  "unity": "2021.3",
+  "unityRelease": "8f1",
+  "documentationUrl": "https://docs.catappult.io/docs/unity-sdk",
+  "changelogUrl": "https://docs.catappult.io/docs/unity-sdk",
+  "licensesUrl": "https://docs.catappult.io/docs/unity-sdk",
+  "dependencies": {
+    "com.unity.textmeshpro": "3.0.6",
+    "com.unity.mobile.android-logcat": "1.3.2"
+  },
+  "keywords": [
+    "AptoideBilling",
+    "Billing",
+    "aptoide",
+    "SDK"
+  ],
+  "author": {
+    "name": "Aptoide Team",
+    "email": "apptechnology@aptoide.com",
+    "url": "https://connect.aptoide.com"
+  }
+}
