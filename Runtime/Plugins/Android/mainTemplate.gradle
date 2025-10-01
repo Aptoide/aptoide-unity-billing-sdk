@@ -4,7 +4,11 @@ apply from: '../shared/keepUnitySymbols.gradle'
 
         dependencies {
             implementation fileTree(dir: 'libs', include: ['*.jar'])
-            implementation("com.aptoide:android-aptoide-billing:1.1.0")
+            implementation("com.indicative.client.android:Indicative-Android:1.1.0")
+            implementation("com.github.matomo-org:matomo-sdk-android:4.1.0")
+            implementation("com.android.support.constraint:constraint-layout:1.1.3")
+            implementation("androidx.browser:browser:1.5.0")
+            implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
             implementation("org.json:json:20210307")
             **DEPS**}
 
@@ -16,8 +20,8 @@ android {
             buildToolsVersion '**BUILDTOOLS**'
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     defaultConfig {
