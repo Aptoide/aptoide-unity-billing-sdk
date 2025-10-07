@@ -1,6 +1,6 @@
 {
   "name": "com.aptoide.aptoideunitybillingsdk",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "displayName": "Aptoide Unity Billing SDK",
   "description": "UPM for Aptoide Billing SDK Integration",
   "unity": "2021.3",
