@@ -1,9 +1,9 @@
 import android.util.Log;
 import androidx.annotation.NonNull;
 import com.aptoide.sdk.billing.*;
-import com.aptoide.sdk.billing.listeners.AptoideAccountStateListener;
+import com.aptoide.sdk.billing.AptoideAccountStateListener;
 import com.aptoide.sdk.billing.listeners.AptoideBillingClientStateListener;
-import com.aptoide.sdk.billing.listeners.AptoideSignInResponseListener;
+import com.aptoide.sdk.billing.AptoideSignInResponseListener;
 import com.aptoide.sdk.billing.listeners.AcknowledgeResponseListener;
 import com.aptoide.sdk.billing.listeners.ConsumeResponseListener;
 import com.unity3d.player.UnityPlayer;
