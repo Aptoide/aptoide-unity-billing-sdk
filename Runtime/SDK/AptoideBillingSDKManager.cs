@@ -12,6 +12,9 @@ public class AptoideBillingSDKManager : MonoBehaviour
     private static IPurchasesUpdatedListener purchasesUpdatedListener;
     private static IPurchasesResponseListener purchasesResponseListener;
     private static IProductDetailsResponseListener productDetailsResponseListener;
+    private static IAcknowledgeResponseListener acknowledgeResponseListener;
+    private static IAptoideSignInResponseListener aptoideSignInResponseListener;
+    private static IAptoideAccountStateListener aptoideAccountStateListener;
 
     public static void InitializePlugin(IAptoideBillingClientStateListener _aptoideBillingClientStateListener,
     IConsumeResponseListener _consumeResponseListener,
@@ -21,11 +24,37 @@ public class AptoideBillingSDKManager : MonoBehaviour
     string publicKey,
     string className)
     {
+        InitializePlugin(_aptoideBillingClientStateListener,
+            _consumeResponseListener,
+            _purchasesUpdatedListener,
+            _productDetailsResponseListener,
+            _purchasesResponseListener,
+            null,
+            null,
+            null,
+            publicKey,
+            className);
+    }
+
+    public static void InitializePlugin(IAptoideBillingClientStateListener _aptoideBillingClientStateListener,
+    IConsumeResponseListener _consumeResponseListener,
+    IPurchasesUpdatedListener _purchasesUpdatedListener,
+    IProductDetailsResponseListener _productDetailsResponseListener,
+    IPurchasesResponseListener _purchasesResponseListener,
+    IAcknowledgeResponseListener _acknowledgeResponseListener,
+    IAptoideSignInResponseListener _aptoideSignInResponseListener,
+    IAptoideAccountStateListener _aptoideAccountStateListener,
+    string publicKey,
+    string className)
+    {
         aptoideBillingClientStateListener = _aptoideBillingClientStateListener;
         consumeResponseListener = _consumeResponseListener;
         purchasesUpdatedListener = _purchasesUpdatedListener;
         purchasesResponseListener = _purchasesResponseListener;
         productDetailsResponseListener = _productDetailsResponseListener;
+        acknowledgeResponseListener = _acknowledgeResponseListener;
+        aptoideSignInResponseListener = _aptoideSignInResponseListener;
+        aptoideAccountStateListener = _aptoideAccountStateListener;
 
         if (Application.platform == RuntimePlatform.Android)
         {
@@ -93,6 +122,29 @@ public class AptoideBillingSDKManager : MonoBehaviour
     public static void ConsumeAsync(ConsumeParams consumeParams)
     {
         aptoideBillingSDKUnityBridge?.CallStatic("consumeAsync", consumeParams.PurchaseToken);
+    }
+
+    public static void AcknowledgeAsync(AcknowledgeParams acknowledgeParams)
+    {
+        aptoideBillingSDKUnityBridge?.CallStatic("acknowledgeAsync", acknowledgeParams.PurchaseToken);
+    }
+
+    public static void SignInToAptoideServices()
+    {
+        aptoideBillingSDKUnityBridge?.CallStatic("signInToAptoideServices");
+    }
+
+    public static bool IsSignedInToAptoideServices()
+    {
+        bool isSignedIn = aptoideBillingSDKUnityBridge?.CallStatic<bool>("isSignedInToAptoideServices") ?? false;
+        Debug.Log($"AptoideBillingSDKManager | IsSignedInToAptoideServices: {isSignedIn}");
+
+        return isSignedIn;
+    }
+
+    public static void SignOutFromAptoideServices()
+    {
+        aptoideBillingSDKUnityBridge?.CallStatic("signOutFromAptoideServices");
     }
 
     public static BillingResult IsFeatureSupported(int feature)
@@ -188,5 +240,30 @@ public class AptoideBillingSDKManager : MonoBehaviour
         ConsumeResult consumeResult = JsonUtility.FromJson<ConsumeResult>(consumeResultJson);
 
         consumeResponseListener.OnConsumeResponse(consumeResult.BillingResult, consumeResult.PurchaseToken);
+    }
+
+    public void AcknowledgeResponseCallback(string acknowledgeResultJson)
+    {
+        Debug.Log($"AptoideBillingSDKManager | Acknowledge Response: {acknowledgeResultJson}");
+
+        AcknowledgeResult acknowledgeResult = JsonUtility.FromJson<AcknowledgeResult>(acknowledgeResultJson);
+
+        acknowledgeResponseListener?.OnAcknowledgeResponse(acknowledgeResult.BillingResult, acknowledgeResult.PurchaseToken);
+    }
+
+    public void SignInResponseCallback(string billingResultJson)
+    {
+        Debug.Log($"AptoideBillingSDKManager | Sign In Response: {billingResultJson}");
+
+        BillingResult billingResult = JsonUtility.FromJson<BillingResult>(billingResultJson);
+
+        aptoideSignInResponseListener?.OnSignInResponse(billingResult);
+    }
+
+    public void AccountStateChangedCallback(string state)
+    {
+        Debug.Log($"AptoideBillingSDKManager | Account State Changed: {state}");
+
+        aptoideAccountStateListener?.OnAccountStateChanged(int.Parse(state));
     }
 }
